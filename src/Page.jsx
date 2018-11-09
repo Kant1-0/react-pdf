@@ -38,6 +38,7 @@ export class PageInternal extends PureComponent {
   state = {
     page: null,
   }
+
   _isMounted = false
 
   componentDidMount() {
@@ -73,7 +74,7 @@ export class PageInternal extends PureComponent {
   componentWillUnmount() {
     const { unregisterPage } = this.props;
 
-    this._isMounted = false
+    this._isMounted = false;
 
     callIfDefined(
       unregisterPage,

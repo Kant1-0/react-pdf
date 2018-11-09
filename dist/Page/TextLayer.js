@@ -61,6 +61,7 @@ function (_PureComponent) {
     (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "state", {
       textItems: null
     });
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "_isMounted", false);
     (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "loadTextItems",
     /*#__PURE__*/
     (0, _asyncToGenerator2.default)(
@@ -83,9 +84,11 @@ function (_PureComponent) {
               _ref2 = _context.sent;
               textItems = _ref2.items;
 
-              _this.setState({
-                textItems: textItems
-              }, _this.onLoadSuccess);
+              if (_this._isMounted) {
+                _this.setState({
+                  textItems: textItems
+                }, _this.onLoadSuccess);
+              }
 
               _context.next = 15;
               break;
@@ -94,9 +97,11 @@ function (_PureComponent) {
               _context.prev = 11;
               _context.t0 = _context["catch"](1);
 
-              _this.setState({
-                textItems: false
-              });
+              if (_this._isMounted) {
+                _this.setState({
+                  textItems: false
+                });
+              }
 
               _this.onLoadError(_context.t0);
 
@@ -128,6 +133,7 @@ function (_PureComponent) {
     key: "componentDidMount",
     value: function componentDidMount() {
       var page = this.props.page;
+      this._isMounted = true;
 
       if (!page) {
         throw new Error('Attempted to load page text content, but no page was specified.');
@@ -147,6 +153,7 @@ function (_PureComponent) {
   }, {
     key: "componentWillUnmount",
     value: function componentWillUnmount() {
+      this._isMounted = false;
       (0, _utils.cancelRunningTask)(this.runningTask);
     }
   }, {

@@ -20,8 +20,12 @@ export class TextLayerInternal extends PureComponent {
     textItems: null,
   }
 
+  _isMounted = false
+
   componentDidMount() {
     const { page } = this.props;
+
+    this._isMounted = true;
 
     if (!page) {
       throw new Error('Attempted to load page text content, but no page was specified.');
@@ -39,6 +43,7 @@ export class TextLayerInternal extends PureComponent {
   }
 
   componentWillUnmount() {
+    this._isMounted = false;
     cancelRunningTask(this.runningTask);
   }
 
@@ -49,9 +54,13 @@ export class TextLayerInternal extends PureComponent {
       const cancellable = makeCancellable(page.getTextContent());
       this.runningTask = cancellable;
       const { items: textItems } = await cancellable.promise;
-      this.setState({ textItems }, this.onLoadSuccess);
+      if (this._isMounted) {
+        this.setState({ textItems }, this.onLoadSuccess);
+      }
     } catch (error) {
-      this.setState({ textItems: false });
+      if (this._isMounted) {
+        this.setState({ textItems: false });
+      }
       this.onLoadError(error);
     }
   }
