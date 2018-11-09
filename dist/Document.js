@@ -278,9 +278,14 @@ function (_PureComponent) {
       var onLoadSuccess = _this.props.onLoadSuccess;
       var pdf = _this.state.pdf;
       (0, _utils.callIfDefined)(onLoadSuccess, pdf);
-      _this.pages = new Array(pdf.numPages);
 
-      _this.linkService.setDocument(pdf);
+      if (pdf) {
+        _this.pages = new Array(pdf.numPages);
+
+        _this.linkService.setDocument(pdf);
+      } else {
+        console.log('no pdf defined');
+      }
     });
     (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "onLoadError", function (error) {
       if ((0, _utils.isCancelException)(error)) {

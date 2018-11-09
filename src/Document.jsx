@@ -221,8 +221,12 @@ export default class Document extends PureComponent {
       pdf,
     );
 
-    this.pages = new Array(pdf.numPages);
-    this.linkService.setDocument(pdf);
+    if (pdf) {
+      this.pages = new Array(pdf.numPages);
+      this.linkService.setDocument(pdf);
+    } else {
+      console.log('no pdf defined');
+    }
   }
 
   /**
