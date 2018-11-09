@@ -38,9 +38,12 @@ export class PageInternal extends PureComponent {
   state = {
     page: null,
   }
+  _isMounted = false
 
   componentDidMount() {
     const { pdf } = this.props;
+
+    this._isMounted = true;
 
     if (!pdf) {
       throw new Error('Attempted to load a page, but no document was specified.');
@@ -69,6 +72,8 @@ export class PageInternal extends PureComponent {
 
   componentWillUnmount() {
     const { unregisterPage } = this.props;
+
+    this._isMounted = false
 
     callIfDefined(
       unregisterPage,
@@ -259,20 +264,26 @@ export class PageInternal extends PureComponent {
       return;
     }
 
-    this.setState((prevState) => {
-      if (!prevState.page) {
-        return null;
-      }
-      return { page: null };
-    });
+    if (this._isMounted) {
+      this.setState((prevState) => {
+        if (!prevState.page) {
+          return null;
+        }
+        return { page: null };
+      });
+    }
 
     try {
       const cancellable = makeCancellable(pdf.getPage(pageNumber));
       this.runningTask = cancellable;
       const page = await cancellable.promise;
-      this.setState({ page }, this.onLoadSuccess);
+      if (this._isMounted) {
+        this.setState({ page }, this.onLoadSuccess);
+      }
     } catch (error) {
-      this.setState({ page: false });
+      if (this._isMounted) {
+        this.setState({ page: false });
+      }
       this.onLoadError(error);
     }
   }
