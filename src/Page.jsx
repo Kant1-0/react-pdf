@@ -257,35 +257,32 @@ export class PageInternal extends PureComponent {
   }
 
   loadPage = async () => {
-    const { pdf } = this.props;
-
-    const pageNumber = this.getPageNumber();
-
-    if (!pageNumber) {
-      return;
-    }
-
     if (this._isMounted) {
+      const { pdf } = this.props;
+
+      const pageNumber = this.getPageNumber();
+
+      if (!pageNumber) {
+        return;
+      }
+
       this.setState((prevState) => {
         if (!prevState.page) {
           return null;
         }
         return { page: null };
       });
-    }
+      
 
-    try {
-      const cancellable = makeCancellable(pdf.getPage(pageNumber));
-      this.runningTask = cancellable;
-      const page = await cancellable.promise;
-      if (this._isMounted) {
+      try {
+        const cancellable = makeCancellable(pdf.getPage(pageNumber));
+        this.runningTask = cancellable;
+        const page = await cancellable.promise;
         this.setState({ page }, this.onLoadSuccess);
-      }
-    } catch (error) {
-      if (this._isMounted) {
+      } catch (error) {
         this.setState({ page: false });
+        this.onLoadError(error);
       }
-      this.onLoadError(error);
     }
   }
 
