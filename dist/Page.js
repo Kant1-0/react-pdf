@@ -107,64 +107,65 @@ function (_PureComponent) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              if (!_this._isMounted) {
-                _context.next = 19;
-                break;
-              }
-
               pdf = _this.props.pdf;
               pageNumber = _this.getPageNumber();
 
               if (pageNumber) {
-                _context.next = 5;
+                _context.next = 4;
                 break;
               }
 
               return _context.abrupt("return");
 
-            case 5:
-              _this.setState(function (prevState) {
-                if (!prevState.page) {
-                  return null;
-                }
+            case 4:
+              if (_this._isMounted) {
+                _this.setState(function (prevState) {
+                  if (!prevState.page) {
+                    return null;
+                  }
 
-                return {
-                  page: null
-                };
-              });
+                  return {
+                    page: null
+                  };
+                });
+              }
 
-              _context.prev = 6;
+              _context.prev = 5;
               cancellable = (0, _utils.makeCancellable)(pdf.getPage(pageNumber));
               _this.runningTask = cancellable;
-              _context.next = 11;
+              _context.next = 10;
               return cancellable.promise;
 
-            case 11:
+            case 10:
               page = _context.sent;
 
-              _this.setState({
-                page: page
-              }, _this.onLoadSuccess);
+              if (_this._isMounted) {
+                _this.setState({
+                  page: page
+                }, _this.onLoadSuccess);
+              }
 
-              _context.next = 19;
+              _context.next = 18;
               break;
 
-            case 15:
-              _context.prev = 15;
-              _context.t0 = _context["catch"](6);
+            case 14:
+              _context.prev = 14;
+              _context.t0 = _context["catch"](5);
 
-              _this.setState({
-                page: false
-              });
+              if (_this._isMounted) {
+                _this.setState({
+                  page: false
+                });
+              }
 
               _this.onLoadError(_context.t0);
 
-            case 19:
+            case 18:
             case "end":
               return _context.stop();
           }
         }
-      }, _callee, this, [[6, 15]]);
+      }, _callee, this, [[5, 14]]);
     })));
     return _this;
   }
